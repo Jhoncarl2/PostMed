@@ -1,0 +1,98 @@
+/* Syncfusion Grid Customizations */
+/* Material import removed in favor of Bootstrap theme */
+
+.e-grid {
+    font-family: 'Poppins', sans-serif !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    border: none !important;
+    overflow: hidden;
+    background-color: white;
+}
+
+/* Header Styling - Fixed line height and padding to prevent clipping */
+.e-grid .e-gridheader {
+    background-color: #f1f5f9 !important;
+    /* Slightly darker slate for contrast */
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.e-grid .e-headercell {
+    background-color: #f1f5f9 !important;
+    height: auto !important;
+    /* Allow growing */
+}
+
+.e-grid .e-headercelldiv {
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    color: var(--text-primary) !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    padding: 1rem !important;
+    margin-bottom: 0 !important;
+    line-height: 1.5 !important;
+    /* Ensure enough space for descenders (g, j, p, q, y) */
+    display: flex !important;
+    align-items: center !important;
+    /* Vertical Center */
+    height: 100% !important;
+    text-overflow: unset !important;
+    /* Try to avoid weird clipping */
+}
+
+/* Specific fix for Sort Icon alignment if needed */
+.e-grid .e-headercelldiv .e-headertext {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Row Styling */
+.e-grid .e-row {
+    transition: background-color 0.2s ease;
+}
+
+.e-grid .e-row:hover {
+    background-color: #f1f5f9 !important;
+    cursor: default;
+}
+
+.e-grid .e-rowcell {
+    font-size: 0.95rem !important;
+    color: var(--text-primary) !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    vertical-align: middle !important;
+    /* Ensure content is vertically centered */
+}
+
+/* Hide Vertical Lines */
+.e-grid .e-headercell,
+.e-grid .e-detailrowcollapse,
+.e-grid .e-detailrowexpand,
+.e-grid .e-rowcell {
+    border-right-color: transparent !important;
+}
+
+/* Zebra Striping */
+.e-grid .e-altrow {
+    background-color: white !important;
+}
+
+/* Pager Customization */
+.e-grid .e-pagerContainer {
+    border-top: 1px solid #e2e8f0 !important;
+    padding: 0.5rem !important;
+}
+
+.e-grid .e-numericcontainer .e-link {
+    border-radius: 8px !important;
+    margin: 0 4px !important;
+}
+
+.e-grid .e-numericcontainer .e-currentitem {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+}

@@ -1,11 +1,40 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import '../node_modules/@syncfusion/ej2-base/styles/bootstrap.css';
+@import '../node_modules/@syncfusion/ej2-buttons/styles/bootstrap.css';
+@import '../node_modules/@syncfusion/ej2-calendars/styles/bootstrap.css';
+@import '../node_modules/@syncfusion/ej2-dropdowns/styles/bootstrap.css';
+@import '../node_modules/@syncfusion/ej2-inputs/styles/bootstrap.css';
+@import '../node_modules/@syncfusion/ej2-navigations/styles/bootstrap.css';
+@import '../node_modules/@syncfusion/ej2-popups/styles/bootstrap.css';
+@import '../node_modules/@syncfusion/ej2-splitbuttons/styles/bootstrap.css';
+@import "../node_modules/@syncfusion/ej2-react-grids/styles/bootstrap.css";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Medical Palette - Calm & Professional */
+  --primary-color: #2563eb;
+  /* Royal Blue */
+  --primary-hover: #1d4ed8;
+  --secondary-color: #64748b;
+  /* Slate Grey */
+  --success-color: #10b981;
+  /* Emerald */
+  --error-color: #ef4444;
+  /* Red */
+  --background-bg: #f1f5f9;
+  /* Slate 100 */
+  --surface-bg: #ffffff;
+  --text-primary: #1e293b;
+  /* Slate 800 */
+  --text-secondary: #475569;
+  /* Slate 600 */
+  --border-color: #e2e8f0;
+  /* Slate 200 */
+
+  /* Typography */
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,21 +42,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--background-bg);
+  color: var(--text-primary);
 }
 
 h1 {
@@ -46,9 +66,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,9 +81,7 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
-    color: #747bff;
-  }
+
   button {
     background-color: #f9f9f9;
   }
