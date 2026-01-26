@@ -1,32 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPatientById } from '../services/patientService';
+import { getPatientById, getWounds, createWound } from '../services/patientService';
+import WoundList from '../components/WoundList';
+import WoundForm from '../components/WoundForm';
+import Modal from '../components/Modal';
 import './PatientDetail.css';
 
 const PatientDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [patient, setPatient] = useState(null);
+    const [wounds, setWounds] = useState([]);
+    const [isWoundModalOpen, setIsWoundModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchPatient = async () => {
+        const fetchData = async () => {
             try {
-                const data = await getPatientById(id);
-                setPatient(data);
+                const [patientData, woundsData] = await Promise.all([
+                    getPatientById(id),
+                    getWounds(id)
+                ]);
+                setPatient(patientData);
+                setWounds(woundsData);
             } catch (error) {
-                console.error("Error fetching patient", error);
+                console.error("Error fetching data", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchPatient();
+        fetchData();
     }, [id]);
 
     if (loading) return <div className="detail-loading">Cargando expediente...</div>;
     if (!patient) return <div className="detail-error">Paciente no encontrado</div>;
 
     const initials = ((patient.nombre?.[0] || '') + (patient.apellido?.[0] || '')).toUpperCase();
+
+    const handleWoundAdded = async (woundData) => {
+        try {
+            await createWound({ ...woundData, paciente_id: id });
+            // Refresh wounds
+            const updatedWounds = await getWounds(id);
+            setWounds(updatedWounds);
+            setIsWoundModalOpen(false);
+        } catch (error) {
+            console.error("Error creating wound:", error);
+        }
+    };
 
     return (
         <div className="patient-detail-container">
@@ -76,14 +97,31 @@ const PatientDetail = () => {
                 </div>
 
                 <div className="detail-section wounds-section">
-                    <h3>Heridas Activas</h3>
-                    <div className="empty-state-wounds">
-                        <span className="empty-icon">🩹</span>
-                        <p>No hay heridas registradas</p>
-                        <button className="btn-text">Registrar Herida</button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h3>Heridas Activas</h3>
+                        <button
+                            className="btn-primary"
+                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.9rem' }}
+                            onClick={() => setIsWoundModalOpen(true)}
+                        >
+                            + Nueva Herida
+                        </button>
                     </div>
+
+                    <WoundList wounds={wounds} />
                 </div>
             </div>
+
+            <Modal
+                isOpen={isWoundModalOpen}
+                onClose={() => setIsWoundModalOpen(false)}
+                title="Registrar Nueva Herida"
+            >
+                <WoundForm
+                    onSubmit={handleWoundAdded}
+                    onCancel={() => setIsWoundModalOpen(false)}
+                />
+            </Modal>
         </div>
     );
 };

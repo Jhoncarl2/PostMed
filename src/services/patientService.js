@@ -29,3 +29,25 @@ export const createPatient = async (patientData) => {
     }
     return response.json();
 };
+
+export const getWounds = async (patientId) => {
+    const response = await fetch(`${API_URL}/pacientes/${patientId}/heridas`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch wounds');
+    }
+    return response.json();
+};
+
+export const createWound = async (woundData) => {
+    const response = await fetch(`${API_URL}/heridas`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(woundData),
+    });
+    if (!response.ok) {
+        throw new Error('Failed to create wound');
+    }
+    return response.json();
+};

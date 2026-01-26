@@ -1,12 +1,14 @@
-@import '../node_modules/@syncfusion/ej2-base/styles/bootstrap.css';
-@import '../node_modules/@syncfusion/ej2-buttons/styles/bootstrap.css';
-@import '../node_modules/@syncfusion/ej2-calendars/styles/bootstrap.css';
-@import '../node_modules/@syncfusion/ej2-dropdowns/styles/bootstrap.css';
-@import '../node_modules/@syncfusion/ej2-inputs/styles/bootstrap.css';
-@import '../node_modules/@syncfusion/ej2-navigations/styles/bootstrap.css';
-@import '../node_modules/@syncfusion/ej2-popups/styles/bootstrap.css';
-@import '../node_modules/@syncfusion/ej2-splitbuttons/styles/bootstrap.css';
-@import "../node_modules/@syncfusion/ej2-react-grids/styles/bootstrap.css";
+@import "tailwindcss";
+
+@import '../node_modules/@syncfusion/ej2-base/styles/tailwind.css';
+@import '../node_modules/@syncfusion/ej2-buttons/styles/tailwind.css';
+@import '../node_modules/@syncfusion/ej2-calendars/styles/tailwind.css';
+@import '../node_modules/@syncfusion/ej2-dropdowns/styles/tailwind.css';
+@import '../node_modules/@syncfusion/ej2-inputs/styles/tailwind.css';
+@import '../node_modules/@syncfusion/ej2-navigations/styles/tailwind.css';
+@import '../node_modules/@syncfusion/ej2-popups/styles/tailwind.css';
+@import '../node_modules/@syncfusion/ej2-splitbuttons/styles/tailwind.css';
+@import "../node_modules/@syncfusion/ej2-react-grids/styles/tailwind.css";
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -46,43 +48,38 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: var(--background-bg);
-  color: var(--text-primary);
+  @apply bg-slate-100 text-slate-800;
+  /* Use Tailwind classes */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Custom Grid Overrides for Premium Look */
+.custom-grid .e-gridheader {
+  border-bottom-color: #f1f5f9 !important;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+.custom-grid .e-headercell {
+  background-color: #ffffff !important;
+  color: #94a3b8 !important;
+  /* slate-400 */
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 11px !important;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
 }
 
-button:hover {
-  border-color: #646cff;
+.custom-grid .e-headertext {
+  color: inherit !important;
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.custom-grid .e-rowcell {
+  border-bottom-color: #f8fafc !important;
+  /* slate-50 */
+  font-size: 14px !important;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
+.custom-grid .e-row:hover .e-rowcell {
+  background-color: #f8fafc !important;
+  /* slate-50 */
 }

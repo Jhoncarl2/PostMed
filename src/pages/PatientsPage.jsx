@@ -4,12 +4,14 @@ import PatientCards from '../components/PatientCards';
 import PatientForm from '../components/PatientForm';
 import Modal from '../components/Modal';
 import { getPatients } from '../services/patientService';
+import PatientFilters from '../components/PatientFilters';
 
 const PatientsPage = () => {
     const gridRef = useRef(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [viewMode, setViewMode] = useState('cards'); // Default to 'cards' for visual appeal
     const [patients, setPatients] = useState([]);
+    const [filteredPatients, setFilteredPatients] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const loadPatientsData = async () => {
@@ -17,6 +19,7 @@ const PatientsPage = () => {
         try {
             const data = await getPatients();
             setPatients(data);
+            setFilteredPatients(data); // Initialize filtered data
         } catch (error) {
             console.error("Error fetching patients:", error);
         } finally {
@@ -30,10 +33,37 @@ const PatientsPage = () => {
 
     const handlePatientAdded = () => {
         loadPatientsData(); // Refresh local data
-        if (gridRef.current) {
-            gridRef.current.loadPatients(); // Also refresh grid if active
-        }
         setIsModalOpen(false);
+    };
+
+    const handleFilterChange = ({ text, dateRange }) => {
+        let result = [...patients];
+
+        // Text Filter
+        if (text) {
+            const lowerText = text.toLowerCase();
+            result = result.filter(p =>
+                (p.nombre + ' ' + p.apellido).toLowerCase().includes(lowerText) ||
+                (p.id && p.id.toString().includes(lowerText))
+            );
+        }
+
+        // Date Range Filter
+        if (dateRange && dateRange.length === 2 && dateRange[0] && dateRange[1]) {
+            const startDate = new Date(dateRange[0]);
+            const endDate = new Date(dateRange[1]);
+            // Reset hours to compare dates only effectively
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
+
+            result = result.filter(p => {
+                if (!p.creado_en) return false;
+                const regDate = new Date(p.creado_en);
+                return regDate >= startDate && regDate <= endDate;
+            });
+        }
+
+        setFilteredPatients(result);
     };
 
     return (
@@ -80,6 +110,9 @@ const PatientsPage = () => {
                 </button>
             </div>
 
+            {/* Advanced Filters */}
+            <PatientFilters onFilterChange={handleFilterChange} />
+
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
@@ -93,9 +126,9 @@ const PatientsPage = () => {
                     <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>Cargando pacientes...</div>
                 ) : (
                     viewMode === 'cards' ? (
-                        <PatientCards patients={patients} />
+                        <PatientCards patients={filteredPatients} />
                     ) : (
-                        <PatientGrid ref={gridRef} />
+                        <PatientGrid ref={gridRef} patients={filteredPatients} />
                     )
                 )}
             </div>
