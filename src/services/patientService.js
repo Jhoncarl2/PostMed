@@ -30,6 +30,30 @@ export const createPatient = async (patientData) => {
     return response.json();
 };
 
+export const updatePatient = async (id, patientData) => {
+    const response = await fetch(`${API_URL}/pacientes/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(patientData),
+    });
+    if (!response.ok) {
+        throw new Error('Failed to update patient');
+    }
+    return response.json();
+};
+
+export const deletePatient = async (id) => {
+    const response = await fetch(`${API_URL}/pacientes/${id}`, {
+        method: 'DELETE',
+    });
+    if (!response.ok) {
+        throw new Error('Failed to delete patient');
+    }
+    return response.json();
+};
+
 export const getWounds = async (patientId) => {
     const response = await fetch(`${API_URL}/pacientes/${patientId}/heridas`);
     if (!response.ok) {

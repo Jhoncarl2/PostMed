@@ -6,7 +6,7 @@ import { getPatients } from '../services/patientService';
 
 import { useNavigate } from 'react-router-dom';
 
-const PatientGrid = forwardRef(({ patients }, ref) => {
+const PatientGrid = forwardRef(({ patients, onEdit, onDelete }, ref) => {
     // const [data, setData] = useState([]); // Removed internal state
 
     // useEffect(() => {
@@ -70,6 +70,27 @@ const PatientGrid = forwardRef(({ patients }, ref) => {
         );
     };
 
+    const actionTemplate = (props) => {
+        return (
+            <div className="flex items-center gap-2">
+                <button
+                    onClick={(e) => { e.stopPropagation(); onEdit(props); }}
+                    className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"
+                    title="Editar"
+                >
+                    ✏️
+                </button>
+                <button
+                    onClick={(e) => { e.stopPropagation(); onDelete(props); }}
+                    className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors"
+                    title="Eliminar"
+                >
+                    🗑️
+                </button>
+            </div>
+        );
+    };
+
     return (
         <div className='p-6 bg-white rounded-3xl shadow-xl border border-slate-100 relative overflow-hidden'>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
@@ -92,6 +113,7 @@ const PatientGrid = forwardRef(({ patients }, ref) => {
                     <ColumnDirective field='fecha_nacimiento' headerText='Fecha Nacimiento' width='160' template={dateTemplate} />
                     <ColumnDirective field='contacto' headerText='Contacto' width='180' template={contactTemplate} />
                     <ColumnDirective field='creado_en' headerText='Registrado' width='140' type='date' format='dd/MM/yyyy' textAlign='Right' />
+                    <ColumnDirective headerText='Acciones' width='120' template={actionTemplate} textAlign='Center' />
                 </ColumnsDirective>
                 <Inject services={[Page, Sort, Filter, Toolbar]} />
             </GridComponent>

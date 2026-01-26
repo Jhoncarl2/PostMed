@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { createPatient } from '../services/patientService';
+import { createPatient, updatePatient } from '../services/patientService';
 import './PatientForm.css';
 
-const PatientForm = ({ onPatientAdded }) => {
+const PatientForm = ({ onPatientAdded, initialData }) => {
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -12,6 +12,24 @@ const PatientForm = ({ onPatientAdded }) => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Load initial data if editing
+    useEffect(() => {
+        if (initialData) {
+            // Format date to YYYY-MM-DD for input[type="date"]
+            let formattedDate = '';
+            if (initialData.fecha_nacimiento) {
+                const date = new Date(initialData.fecha_nacimiento);
+                formattedDate = date.toISOString().split('T')[0];
+            }
+            setFormData({
+                nombre: initialData.nombre || '',
+                apellido: initialData.apellido || '',
+                fecha_nacimiento: formattedDate,
+                contacto: initialData.contacto || ''
+            });
+        }
+    }, [initialData]);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -20,42 +38,26 @@ const PatientForm = ({ onPatientAdded }) => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await createPatient(formData);
-            // alert('Paciente creado con éxito!'); // Use proper UI notification if possible, otherwise keep simple for now
+            if (initialData && initialData.id) {
+                await updatePatient(initialData.id, formData);
+            } else {
+                await createPatient(formData);
+            }
+
             setFormData({ nombre: '', apellido: '', fecha_nacimiento: '', contacto: '' });
             if (onPatientAdded) onPatientAdded();
         } catch (error) {
-            console.error('Error al crear paciente:', error);
-            alert('Falló la creación del paciente.');
+            console.error('Error al guardar paciente:', error);
+            alert('Falló la operación.');
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    // Keyboard Shortcut: Ctrl+S to Submit
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                e.preventDefault();
-                // Check if form is valid (simple check)
-                if (formData.nombre && formData.apellido) {
-                    // Trigger submit manually since we can't easily access the event object here in a clean way for handleSubmit without refactoring
-                    // Instead, we'll create a synthetic event or just call the logic.
-                    // Ideally, use a ref for the button or form.
-                    const submitBtn = document.querySelector('button[type="submit"]');
-                    if (submitBtn) submitBtn.click();
-                }
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [formData]);
-
     return (
         <div className="patient-form-card">
             <div className="patient-form-header">
-                <h3>Registrar Nuevo Paciente</h3>
+                <h3>{initialData ? 'Editar Paciente' : 'Registrar Nuevo Paciente'}</h3>
             </div>
             <form onSubmit={handleSubmit} className="patient-form-grid">
                 <div className="form-field">
@@ -108,7 +110,7 @@ const PatientForm = ({ onPatientAdded }) => {
                 </div>
                 <div className="form-actions">
                     <button type="submit" className="btn-primary" disabled={isSubmitting}>
-                        {isSubmitting ? 'Guardando...' : 'Registrar Paciente'}
+                        {isSubmitting ? 'Guardando...' : (initialData ? 'Actualizar Paciente' : 'Registrar Paciente')}
                     </button>
                 </div>
             </form>

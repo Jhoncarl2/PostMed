@@ -3,7 +3,7 @@ import PatientGrid from '../components/PatientGrid';
 import PatientCards from '../components/PatientCards';
 import PatientForm from '../components/PatientForm';
 import Modal from '../components/Modal';
-import { getPatients } from '../services/patientService';
+import { getPatients, deletePatient } from '../services/patientService';
 import PatientFilters from '../components/PatientFilters';
 
 const PatientsPage = () => {
@@ -13,6 +13,7 @@ const PatientsPage = () => {
     const [patients, setPatients] = useState([]);
     const [filteredPatients, setFilteredPatients] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [editingPatient, setEditingPatient] = useState(null);
 
     const loadPatientsData = async () => {
         setLoading(true);
@@ -34,6 +35,24 @@ const PatientsPage = () => {
     const handlePatientAdded = () => {
         loadPatientsData(); // Refresh local data
         setIsModalOpen(false);
+        setEditingPatient(null);
+    };
+
+    const handleEdit = (patient) => {
+        setEditingPatient(patient);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async (patient) => {
+        if (window.confirm(`¿Estás seguro de eliminar al paciente ${patient.nombre} ${patient.apellido}? Esta acción no se puede deshacer.`)) {
+            try {
+                await deletePatient(patient.id);
+                loadPatientsData();
+            } catch (error) {
+                console.error("Error deleting patient:", error);
+                alert("Error al eliminar paciente. Intente nuevamente.");
+            }
+        }
     };
 
     const handleFilterChange = ({ text, dateRange }) => {
@@ -64,6 +83,11 @@ const PatientsPage = () => {
         }
 
         setFilteredPatients(result);
+    };
+
+    const openNewPatientModal = () => {
+        setEditingPatient(null);
+        setIsModalOpen(true);
     };
 
     return (
@@ -103,7 +127,7 @@ const PatientsPage = () => {
 
                 <button
                     className="btn-primary"
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={openNewPatientModal}
                     style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >
                     <span>+</span> Nuevo Paciente
@@ -116,9 +140,12 @@ const PatientsPage = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title="Registrar Nuevo Paciente"
+                title={editingPatient ? "Editar Paciente" : "Registrar Nuevo Paciente"}
             >
-                <PatientForm onPatientAdded={handlePatientAdded} />
+                <PatientForm
+                    onPatientAdded={handlePatientAdded}
+                    initialData={editingPatient}
+                />
             </Modal>
 
             <div style={{ marginTop: '20px' }}>
@@ -128,7 +155,12 @@ const PatientsPage = () => {
                     viewMode === 'cards' ? (
                         <PatientCards patients={filteredPatients} />
                     ) : (
-                        <PatientGrid ref={gridRef} patients={filteredPatients} />
+                        <PatientGrid
+                            ref={gridRef}
+                            patients={filteredPatients}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                        />
                     )
                 )}
             </div>

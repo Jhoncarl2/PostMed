@@ -116,6 +116,38 @@ app.post('/api/pacientes', async (req, res) => {
     }
 });
 
+// Update patient
+app.put('/api/pacientes/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nombre, apellido, fecha_nacimiento, contacto } = req.body;
+    try {
+        const result = await pool.query(
+            'UPDATE pacientes SET nombre = $1, apellido = $2, fecha_nacimiento = $3, contacto = $4 WHERE id = $5 RETURNING *',
+            [nombre, apellido, fecha_nacimiento, contacto, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Paciente no encontrado' });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete patient
+app.delete('/api/pacientes/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query('DELETE FROM pacientes WHERE id = $1 RETURNING *', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Paciente no encontrado' });
+        }
+        res.json({ message: 'Paciente eliminado correctamente' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Get wounds for a patient
 app.get('/api/pacientes/:id/heridas', async (req, res) => {
     const { id } = req.params;
